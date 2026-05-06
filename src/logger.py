@@ -9,13 +9,12 @@ LOG_FILE_PATH = os.path.join(LOG_DIR, LOG_FILE)
 
 os.makedirs(LOG_DIR, exist_ok=True)
 
-LOG_FORMAT = "[%(asctime)s] %(lineno)d %(name)s - %(levelname)s - %(message)s"
-
 logging.basicConfig(
     level=logging.INFO,
-    format=LOG_FORMAT,
+    format="[%(asctime)s] %(lineno)d %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(LOG_FILE_PATH, encoding="utf-8"),
         logging.StreamHandler(),
     ],
 )
+
