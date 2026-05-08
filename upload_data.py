@@ -5,6 +5,13 @@ from pathlib import Path
 import pandas as pd
 from pymongo import MongoClient
 
+env_file = Path(__file__).parent / ".env"
+if env_file.exists():
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip().lstrip("\ufeff"), value.strip())
+
 mongo_db_url = os.getenv("MONGO_DB_URL")
 if not mongo_db_url:
     raise ValueError("MONGO_DB_URL environment variable is not set")

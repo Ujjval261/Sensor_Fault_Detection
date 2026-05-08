@@ -1,5 +1,13 @@
 import os
+from pathlib import Path
 
+
+env_file = Path(__file__).resolve().parents[2] / ".env"
+if env_file.exists():
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip().lstrip("\ufeff"), value.strip())
 
 AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME")
 MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME", "sensor_fault_database")
