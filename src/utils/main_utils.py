@@ -1,10 +1,17 @@
+import importlib
 import os
 import pickle
 import sys
 from typing import Any
 
 import numpy as np
-import yaml
+
+try:
+    yaml = importlib.import_module("yaml")
+except ImportError as error:
+    raise ModuleNotFoundError(
+        "PyYAML is required for MainUtils. Install it with `pip install PyYAML`."
+    ) from error
 
 from src.exception import CustomException
 from src.logger import logging
