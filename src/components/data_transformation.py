@@ -47,7 +47,12 @@ class DataTransformation:
                 raise ValueError("No numeric sensor columns found for model training.")
 
             target_values = dataframe[TARGET_COLUMN].astype(str).str.strip().str.lower()
-            target = np.where(target_values.isin(["-1", "0", "bad"]), 0, 1)
+            numeric_target = pd.to_numeric(target_values, errors="coerce")
+            target = np.where(
+                (numeric_target == -1) | (numeric_target == 0) | target_values.eq("bad"),
+                0,
+                1,
+            )
             return features, target
         except Exception as e:
             raise CustomException(e, sys)
