@@ -1,7 +1,8 @@
 import sys
 import os
+import json
 import numpy as np
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from xgboost import XGBClassifier
 from sklearn.svm import SVC
@@ -19,6 +20,7 @@ from dataclasses import dataclass
 class ModelTrainerConfig:
     artifact_folder = os.path.join(artifact_folder)
     trained_model_path = os.path.join(artifact_folder, "model.pkl")
+    model_metrics_path = os.path.join(artifact_folder, "model_metrics.json")
     expected_accuracy = 0.45
     model_config_file_path = os.path.join("config", "model.yaml")
 
@@ -160,6 +162,18 @@ class ModelTrainer:
             best_model.fit(x_train, y_train)
             y_pred = best_model.predict(x_test)
             best_model_score = accuracy_score(y_test, y_pred)
+            metrics = {
+                "best_model_name": best_model_name,
+                "accuracy": float(best_model_score),
+                "classification_report": classification_report(
+                    y_test,
+                    y_pred,
+                    target_names=["Bad", "Good"],
+                    output_dict=True,
+                    zero_division=0,
+                ),
+                "confusion_matrix": confusion_matrix(y_test, y_pred).tolist(),
+            }
 
             print(f"best model name {best_model_name} and score: {best_model_score}")
 
@@ -178,6 +192,8 @@ class ModelTrainer:
                 file_path=self.model_trainer_config.trained_model_path,
                 obj=best_model,
             )
+            with open(self.model_trainer_config.model_metrics_path, "w", encoding="utf-8") as metrics_file:
+                json.dump(metrics, metrics_file, indent=2)
 
             return self.model_trainer_config.trained_model_path
 

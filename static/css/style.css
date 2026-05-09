@@ -272,6 +272,38 @@ button,
   background: #d8f0ec;
 }
 
+.model-score {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 14px;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbfb;
+}
+
+.model-score span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.model-score strong {
+  text-align: right;
+}
+
+.text-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--teal-dark);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
 .results {
   margin-top: 24px;
 }
