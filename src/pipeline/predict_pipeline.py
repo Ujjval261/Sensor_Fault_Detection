@@ -26,7 +26,13 @@ class PredictPipelineConfig:
         return os.path.join(self.prediction_output_dirname, self.prediction_file_name)
 
 
-class PredictPipeline:
+@dataclass
+class PredictionFileDetail:
+    prediction_file_path: str
+    prediction_file_name: str
+
+
+class PredictionPipeline:
     def __init__(self, request: Request):
         self.request = request
         self.predict_pipeline_config = PredictPipelineConfig()
@@ -111,10 +117,16 @@ class PredictPipeline:
         except Exception as error:
             raise CustomException(error, sys) from error
 
-    def run_pipeline(self) -> str:
+    def run_pipeline(self) -> PredictionFileDetail:
         try:
             input_file_path = self.save_input_file()
             self.get_predicted_dataframe(input_file_path)
-            return self.predict_pipeline_config.prediction_file_path
+            return PredictionFileDetail(
+                prediction_file_path=self.predict_pipeline_config.prediction_file_path,
+                prediction_file_name=self.predict_pipeline_config.prediction_file_name,
+            )
         except Exception as error:
             raise CustomException(error, sys) from error
+
+
+PredictPipeline = PredictionPipeline
