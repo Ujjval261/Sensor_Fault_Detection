@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Fault Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Wafer sensor quality</p>
+        <h1>Sensor Fault Detection</h1>
+        <p class="lede">Classify uploaded sensor records as Good or Bad using the trained wafer fault model.</p>
+      </div>
+
+      <div class="status-panel">
+        <span class="status-dot {% if artifacts_ready %}ready{% else %}missing{% endif %}"></span>
+        <div>
+          <p class="status-label">Model Status</p>
+          <strong>{% if artifacts_ready %}Ready for prediction{% else %}Training required{% endif %}</strong>
+        </div>
+      </div>
+    </section>
+
+    {% if error_message %}
+      <div class="alert error">{{ error_message }}</div>
+    {% endif %}
+
+    {% if success_message %}
+      <div class="alert success">{{ success_message }}</div>
+    {% endif %}
+
+    <section class="workspace">
+      <form class="upload-panel" action="/predict" method="post" enctype="multipart/form-data">
+        <div class="panel-heading">
+          <span class="panel-icon">CSV</span>
+          <div>
+            <h2>Prediction Input</h2>
+            <p>Upload wafer sensor data with the same columns used during training.</p>
+          </div>
+        </div>
+
+        <label class="dropzone">
+          <input type="file" name="file" accept=".csv" required>
+          <span class="upload-mark">+</span>
+          <strong>Select CSV file</strong>
+          <small>Good/Bad can be present; it will be ignored for prediction.</small>
+        </label>
+
+        <div class="actions">
+          <button class="primary-btn" type="submit">Run Prediction</button>
+        </div>
+      </form>
+
+      <aside class="side-panel">
+        <h2>Local Model</h2>
+        <p>Sample training uses the wafer CSV in the notebooks folder and creates local artifacts.</p>
+        <form action="/train-sample" method="post">
+          <button class="secondary-btn" type="submit">Train Sample Model</button>
+        </form>
+      </aside>
+    </section>
+
+    {% if prediction_file_path %}
+      <section class="results">
+        <div class="results-heading">
+          <div>
+            <p class="eyebrow">Prediction output</p>
+            <h2>{{ total_rows }} records processed</h2>
+          </div>
+          <a class="download-btn" href="/download">Download CSV</a>
+        </div>
+
+        <div class="metrics">
+          <div class="metric good">
+            <span>Good</span>
+            <strong>{{ good_count }}</strong>
+          </div>
+          <div class="metric bad">
+            <span>Bad</span>
+            <strong>{{ bad_count }}</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          {{ preview_table | safe }}
+        </div>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>

@@ -40,3 +40,8 @@ Thumbs.db
 # Logs
 logs/
 *.log
+
+# Runtime artifacts
+artifacts/*.pkl
+Prediction_Output/
+prediction_artifacts/

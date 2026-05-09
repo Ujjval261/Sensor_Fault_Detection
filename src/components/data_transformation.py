@@ -36,6 +36,22 @@ class DataTransformation:
         except Exception as e:
             raise CustomException(e, sys)
 
+    @staticmethod
+    def get_feature_target_dataframe(dataframe: pd.DataFrame):
+        try:
+            features = dataframe.drop(columns=TARGET_COLUMN)
+            features = features.drop(columns=["Unnamed: 0"], errors="ignore")
+            features = features.select_dtypes(include=[np.number])
+
+            if features.empty:
+                raise ValueError("No numeric sensor columns found for model training.")
+
+            target_values = dataframe[TARGET_COLUMN].astype(str).str.strip().str.lower()
+            target = np.where(target_values.isin(["-1", "0", "bad"]), 0, 1)
+            return features, target
+        except Exception as e:
+            raise CustomException(e, sys)
+
     def get_data_transformer_objects(self):
         try:
             imputer_step = ('imputer', SimpleImputer(strategy='constant', fill_value=0))
@@ -50,8 +66,7 @@ class DataTransformation:
         logging.info("Entered the initiate_data_transformation method of the Data_Transformation class")
         try:
             dataframe  = self.get_data(feature_store_file_path=self.feature_store_file_path)
-            X = dataframe.drop(columns=TARGET_COLUMN)
-            y = np.where(dataframe[TARGET_COLUMN] == -1, 0, 1)
+            X, y = self.get_feature_target_dataframe(dataframe)
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.2, random_state=42, stratify=y
             )
