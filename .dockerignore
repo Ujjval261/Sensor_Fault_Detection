@@ -1,0 +1,17 @@
+.git
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+!.env.example
+logs
+*.log
+artifacts/*.pkl
+artifacts/*.csv
+Prediction_Output
+prediction_artifacts
+server.*.log
+Fault_Detection.egg-info

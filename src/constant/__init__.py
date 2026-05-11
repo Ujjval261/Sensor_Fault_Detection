@@ -9,7 +9,7 @@ if env_file.exists():
             key, value = line.split("=", 1)
             os.environ.setdefault(key.strip().lstrip("\ufeff"), value.strip())
 
-AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME")
+AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "waferfaultdetection11")
 MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME", "sensor_fault_database")
 MONGO_COLLECTION_NAME = os.getenv("MONGO_COLLECTION_NAME", "wafer_fault")
 TARGET_COLUMN = os.getenv("TARGET_COLUMN", "Good/Bad")
