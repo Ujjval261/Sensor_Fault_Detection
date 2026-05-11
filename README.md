@@ -5,7 +5,7 @@ A Flask-based machine learning project that predicts whether wafer sensor readin
 - `-1` or `0` -> `Bad`
 - `1` -> `Good`
 
-The app supports model training, CSV upload prediction, a prediction summary page, downloadable prediction output, and a metrics endpoint.
+The app supports model training, CSV upload prediction, dashboard results, and downloadable prediction output.
 
 ## Project Highlights
 
@@ -13,10 +13,7 @@ The app supports model training, CSV upload prediction, a prediction summary pag
 - Robust preprocessing for numeric sensor columns
 - Handles `-1`, `-1.0`, `0`, `1`, and text labels like `Bad`
 - Saves trained model and preprocessor artifacts locally
-- Shows prediction counts and preview table in the UI
 - Downloads prediction results as `predictions_file.csv`
-- Saves model metrics in `artifacts/model_metrics.json`
-- Includes health and metrics API routes for deployment readiness
 
 ## Tech Stack
 
@@ -64,24 +61,16 @@ http://127.0.0.1:5000
 
 ## Routes
 
-- `/` - Upload and prediction UI
+- `/` - Dashboard
 - `/predict` - GET shows upload page, POST runs prediction
-- `/download` - Downloads latest prediction CSV
 - `/train` - Trains the model and refreshes artifacts
-- `/metrics` - Returns model metrics as JSON
-- `/health` - Returns app health status
+- `/download` - Downloads latest prediction CSV
 
 ## Model Output
 
 The prediction output CSV contains the original uploaded sensor columns plus a `Good/Bad` prediction column.
 
-The UI shows:
-
-- total processed records
-- Good count
-- Bad count
-- preview table
-- download button
+The dashboard shows total processed records, Good/Bad counts, a preview table, and a download button after prediction.
 
 ## Artifacts
 
@@ -90,7 +79,7 @@ Runtime artifacts are intentionally ignored by Git:
 ```text
 artifacts/model.pkl
 artifacts/preprocessor.pkl
-artifacts/model_metrics.json
+artifacts/wafer_fault.csv
 Prediction_Output/
 prediction_artifacts/
 logs/
@@ -103,6 +92,5 @@ Train the model locally or place compatible `model.pkl` and `preprocessor.pkl` f
 Before Docker or AWS deployment:
 
 1. Keep secrets in environment variables, not in Git.
-2. Use `/health` for load balancer health checks.
-3. Train artifacts locally or upload them securely during deployment.
-4. Set `PORT` and `HOST` as needed.
+2. Train artifacts locally or upload them securely during deployment.
+3. Set `PORT` and `HOST` as needed.

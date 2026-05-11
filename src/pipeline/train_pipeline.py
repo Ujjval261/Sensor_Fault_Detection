@@ -1,4 +1,5 @@
 import sys
+import shutil
 from pathlib import Path
 
 from src.components.data_ingestion import DataIngestion
@@ -11,13 +12,15 @@ from src.exception import CustomException
 class TrainingPipeline:
     def start_data_ingestion(self):
         try:
-            local_training_files = [
-                Path("artifacts") / "wafer_fault.csv",
-                Path("notebooks") / "wafer_23012020_041211.csv",
-            ]
-            for file_path in local_training_files:
-                if file_path.exists():
-                    return str(file_path)
+            feature_store_file_path = Path("artifacts") / "wafer_fault.csv"
+            if feature_store_file_path.exists():
+                return str(feature_store_file_path)
+
+            local_training_file_path = Path("notebooks") / "wafer_23012020_041211.csv"
+            if local_training_file_path.exists():
+                feature_store_file_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(local_training_file_path, feature_store_file_path)
+                return str(feature_store_file_path)
 
             if not MONGO_DB_URL:
                 raise ValueError(

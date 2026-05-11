@@ -43,7 +43,7 @@ logs/
 
 # Runtime artifacts
 artifacts/*.pkl
-artifacts/model_metrics.json
+artifacts/*.csv
 Prediction_Output/
 prediction_artifacts/
 server.*.log

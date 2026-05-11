@@ -12,7 +12,7 @@
       <div class="hero-copy">
         <p class="eyebrow">Wafer sensor quality</p>
         <h1>Sensor Fault Detection</h1>
-        <p class="lede">Classify uploaded sensor records as Good or Bad using the trained wafer fault model.</p>
+        <p class="lede">Train the local wafer fault model and review prediction output in one dashboard.</p>
       </div>
 
       <div class="status-panel">
@@ -20,6 +20,7 @@
         <div>
           <p class="status-label">Model Status</p>
           <strong>{% if artifacts_ready %}Ready for prediction{% else %}Training required{% endif %}</strong>
+          <small>{% if artifacts_ready %}model.pkl and preprocessor.pkl found{% else %}Run training once to create .pkl files{% endif %}</small>
         </div>
       </div>
     </section>
@@ -56,19 +57,15 @@
 
       <aside class="side-panel">
         <h2>Local Model</h2>
-        <p>Training uses a local wafer CSV when available, otherwise MongoDB ingestion is used.</p>
-        {% if model_metrics %}
-          <div class="model-score">
-            <span>Best model</span>
-            <strong>{{ model_metrics.best_model_name }}</strong>
-            <span>Accuracy</span>
-            <strong>{{ "%.2f"|format(model_metrics.accuracy * 100) }}%</strong>
-          </div>
-        {% endif %}
+        <p>Training uses the wafer CSV in artifacts when available. If it is missing, the local notebook CSV is copied there first.</p>
+        <div class="artifact-list">
+          <span class="{% if artifacts_ready %}ok{% else %}pending{% endif %}">model.pkl</span>
+          <span class="{% if artifacts_ready %}ok{% else %}pending{% endif %}">preprocessor.pkl</span>
+          <span class="{% if training_data_ready %}ok{% else %}pending{% endif %}">wafer_fault.csv</span>
+        </div>
         <form action="/train" method="get">
           <button class="secondary-btn" type="submit">Train Model</button>
         </form>
-        <a class="text-link" href="/metrics" target="_blank">View metrics JSON</a>
       </aside>
     </section>
 
@@ -79,7 +76,7 @@
             <p class="eyebrow">Prediction output</p>
             <h2>{{ total_rows }} records processed</h2>
           </div>
-          <a class="download-btn" href="/download">Download CSV</a>
+          <a class="download-btn" href="{{ prediction_file_path }}">Download CSV</a>
         </div>
 
         <div class="metrics">
